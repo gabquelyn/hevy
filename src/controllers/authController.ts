@@ -1,9 +1,10 @@
 import { Response, Request } from "express";
 import expressAsyncHandler from "express-async-handler";
 import Token from "../model/token";
-import User from "../model/User";
+import User from "../model/user";
 import sendMail from "../utils/sendMail";
 import crypto from "crypto";
+import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 export const loginController = expressAsyncHandler(
@@ -44,6 +45,7 @@ export const loginController = expressAsyncHandler(
         UserInfo: {
           email: foundUser.email,
           userId: foundUser._id,
+          role: foundUser.role
         },
       },
       String(process.env.ACCESS_TOKEN_SECRET),
@@ -64,7 +66,7 @@ export const loginController = expressAsyncHandler(
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
-    return res.json({ accessToken });
+    return res.json({ accessToken, role: foundUser.email });
   }
 );
 
@@ -169,5 +171,37 @@ export const restPasswordController = expressAsyncHandler(
     }
     await existingToken.deleteOne();
     return res.status(200).json({ message: "password updated successfully!" });
+  }
+);
+
+export const refreshController = expressAsyncHandler(
+  async (req: Request, res: Response): Promise<any> => {
+    const cookies = req.cookies;
+    if (!cookies?.jwt) return res.status(403).json({ message: "Unauthorized" });
+    const refreshToken = cookies.jwt;
+    // verify the refresh token
+    jwt.verify(
+      refreshToken,
+      process.env.REFRESH_TOKEN_SECRET as string,
+      async (error: any, decoded: any) => {
+        if (error) return res.status(403).json({ message: "Forbidden" });
+        const foundUser = await User.findOne({ email: decoded?.email }).exec();
+        if (!foundUser)
+          return res.status(400).json({ message: "Unauthorized" });
+        // create the access token
+        const accessToken = jwt.sign(
+          {
+            UserInfo: {
+              email: foundUser.email,
+              role: foundUser.role,
+              userId: foundUser._id,
+            },
+          },
+          process.env.ACCESS_TOKEN_SECRET as string,
+          { expiresIn: "1h" }
+        );
+        res.json({ accessToken, role: foundUser.role });
+      }
+    );
   }
 );

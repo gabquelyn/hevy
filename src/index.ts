@@ -5,8 +5,9 @@ import errorHandler from "./middlewares/errorHandler";
 import dotenv from "dotenv";
 import connectDB from "./utils/connectDB";
 import mongoose from "mongoose";
-import path from "path"
+import path from "path";
 import authRouter from "./routes/authRoutes";
+import songRouter from "./routes/songRoute";
 
 dotenv.config();
 connectDB();
@@ -23,8 +24,8 @@ app.use((req: Request, res: Response) => {
   return res.status(200).json({ message: "Welcome to server" });
 });
 
-app.use('/auth', authRouter)
-
+app.use("/auth", authRouter);
+app.use("/song", songRouter);
 
 app.use(errorHandler);
 mongoose.connection.on("open", () => {
@@ -41,4 +42,3 @@ mongoose.connection.on("error", (err) => {
     "mongoErr.log"
   );
 });
-

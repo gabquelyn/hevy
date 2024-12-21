@@ -3,11 +3,12 @@ import {
   verifyController,
   loginController,
   logoutController,
-  registerController,
+  refreshController,
 } from "../controllers/authController";
 const authRouter = Router();
 authRouter.route("/").post(loginController);
 authRouter.route("/verify").post(verifyController);
 authRouter.route("/logout").post(logoutController);
-authRouter.route("/register").post(registerController);
+authRouter.route("/refresh").post(refreshController);
+// authRouter.route("/register").post(registerController);
 export default authRouter

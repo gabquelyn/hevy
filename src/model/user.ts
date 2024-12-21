@@ -10,10 +10,15 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    role: {
+      type: String,
+      required: true,
+      default: "artiste",
+    },
     verified: {
-        type: Boolean,
-        default: false
-    }
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,
