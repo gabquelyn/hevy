@@ -6,7 +6,7 @@ aws.config.update({
   region: process.env.AWS_REGION,
 });
 
-export default function getSignedUrl(filename: string): string {
+export default async function getSignedUrl(filename: string): Promise<string> {
   const S3 = new aws.S3();
   try {
     return S3.getSignedUrl("getObject", {

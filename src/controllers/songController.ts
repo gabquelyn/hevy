@@ -4,11 +4,14 @@ import { Request, Response } from "express";
 import Song from "../model/Song";
 import { v4 as uuid } from "uuid";
 import getSignedUrl from "../utils/getSignedUrl";
-
+import { validationResult } from "express-validator";
 export const createSong = expressAsyncHandler(
   async (req: Request, res: Response): Promise<any> => {
     if (!req.file)
       return res.status(400).json({ message: "Missing poster image" });
+    const errors = validationResult(req);
+    if (!errors.isEmpty())
+      return res.status(400).json({ errors: errors.array() });
     const {
       name,
       title,
@@ -56,11 +59,16 @@ export const getSongs = expressAsyncHandler(
   }
 );
 
-export const editSong = expressAsyncHandler(
+export const getSongbyId = expressAsyncHandler(
   async (req: Request, res: Response): Promise<any> => {
     const { id } = req.params;
     const existingSong = await Song.findById(id).lean().exec();
     if (!existingSong) return res.status(404).json({ message: "Not found" });
+
+    return res.status(200).json({
+      ...existingSong,
+      posterImage: await getSignedUrl(existingSong.posterImage),
+    });
   }
 );
 
@@ -72,7 +80,7 @@ export const deleteSong = expressAsyncHandler(
   }
 );
 
-export const getSongbyId = expressAsyncHandler(
+export const editSong = expressAsyncHandler(
   async (req: Request, res: Response): Promise<any> => {
     const { id } = req.params;
     const existingSong = await Song.findById(id).exec();

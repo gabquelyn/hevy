@@ -1,4 +1,5 @@
 import { Router, NextFunction, Request, Response } from "express";
+import { body } from "express-validator";
 import multer from "multer";
 import {
   createSong,
@@ -20,6 +21,11 @@ songRoute
       next();
     },
     upload.single("PosterImage"),
+    [
+      body("name").notEmpty().withMessage("Artiste name is required"),
+      body("title").notEmpty().withMessage("Song title is required"),
+      body("year").notEmpty().withMessage("Release year is required"),
+    ],
     createSong
   )
   .get(getSongs);
