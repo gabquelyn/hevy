@@ -4,7 +4,7 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc",
+    "build": "npx tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node dist/index.js",
     "dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/index.js\""
@@ -13,7 +13,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "aws-sdk": "^2.1692.0",
+    "@aws-sdk/client-s3": "^3.723.0",
+    "@aws-sdk/s3-request-presigner": "^3.723.0",
     "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.6",
     "date-fns": "^3.4.0",

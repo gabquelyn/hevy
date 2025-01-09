@@ -14,12 +14,12 @@ export default async function connectDB() {
       const newAdminAccount = await User.create({
         email: process.env.ADMIN_ACCOUNT,
         verified: true,
-        password: bcrypt.hash(process.env.ADMIN_PASS!, 10),
+        password: await bcrypt.hash(process.env.ADMIN_PASS!, 10),
         role: "admin",
       });
       if (newAdminAccount) console.log("Admin account created");
     }
   } catch (err) {
-    console.log(err);
+    console.log("Error creating admin account", err);
   }
 }

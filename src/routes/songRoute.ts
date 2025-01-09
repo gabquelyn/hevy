@@ -28,7 +28,7 @@ songRoute
     ],
     createSong
   )
-  .get(getSongs);
+  .get(verifyJWT,getSongs);
 
 songRoute
   .route("/:id")

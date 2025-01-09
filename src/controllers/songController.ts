@@ -1,10 +1,19 @@
 import expressAsyncHandler from "express-async-handler";
-import aws from "aws-sdk";
 import { Request, Response } from "express";
+import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import Song from "../model/Song";
 import { v4 as uuid } from "uuid";
 import getSignedUrl from "../utils/getSignedUrl";
 import { validationResult } from "express-validator";
+
+const s3Client = new S3Client({
+  region: process.env.AWS_REGION!, 
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
+  },
+});
+
 export const createSong = expressAsyncHandler(
   async (req: Request, res: Response): Promise<any> => {
     if (!req.file)
@@ -24,20 +33,15 @@ export const createSong = expressAsyncHandler(
       itunes,
       amazon,
     } = req.body;
-    aws.config.update({
-      accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-      region: process.env.AWS_REGION,
-    });
-    const S3 = new aws.S3();
     const filename = `${uuid()}-${req.file.filename}`;
-    const uploadRes = await S3.upload({
+    const params = {
       Bucket: process.env.AWS_BUCKET_NAME!,
       Key: filename,
       Body: req.file.buffer,
-      // ACL: "public-read",
-      ACL: "private",
-    }).promise();
+    };
+
+    const command = new PutObjectCommand(params);
+    const uploadRes = await s3Client.send(command);
     console.log(uploadRes);
 
     const newSong = await Song.create({
@@ -100,20 +104,15 @@ export const editSong = expressAsyncHandler(
     } = req.body;
 
     if (req.file) {
-      aws.config.update({
-        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-        region: process.env.AWS_REGION,
-      });
-      const S3 = new aws.S3();
       const filename = `${uuid()}-${req.file.filename}`;
-      const uploadRes = await S3.upload({
+      const params = {
         Bucket: process.env.AWS_BUCKET_NAME!,
         Key: filename,
         Body: req.file.buffer,
-        // ACL: "public-read",
-        ACL: "private",
-      }).promise();
+      };
+
+      const command = new PutObjectCommand(params);
+      const uploadRes = await s3Client.send(command);
       console.log(uploadRes);
     }
 
