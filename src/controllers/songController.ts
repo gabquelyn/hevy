@@ -6,16 +6,15 @@ import { v4 as uuid } from "uuid";
 import getSignedUrl from "../utils/getSignedUrl";
 import { validationResult } from "express-validator";
 
-const s3Client = new S3Client({
-  region: process.env.AWS_REGION!, 
-  credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
-  },
-});
-
 export const createSong = expressAsyncHandler(
   async (req: Request, res: Response): Promise<any> => {
+    const s3Client = new S3Client({
+      region: process.env.AWS_REGION!,
+      credentials: {
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
+      },
+    });
     if (!req.file)
       return res.status(400).json({ message: "Missing poster image" });
     const errors = validationResult(req);
@@ -88,6 +87,13 @@ export const editSong = expressAsyncHandler(
   async (req: Request, res: Response): Promise<any> => {
     const { id } = req.params;
     const existingSong = await Song.findById(id).exec();
+    const s3Client = new S3Client({
+      region: process.env.AWS_REGION!,
+      credentials: {
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
+      },
+    });
     if (!existingSong) return res.status(404).json({ message: "Not found" });
 
     const {

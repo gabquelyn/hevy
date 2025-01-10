@@ -66,7 +66,7 @@ export const loginController = expressAsyncHandler(
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
-    return res.json({ accessToken, role: foundUser.email });
+    return res.json({ accessToken, role: foundUser.role });
   }
 );
 

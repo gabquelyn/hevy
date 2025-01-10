@@ -22,7 +22,7 @@ export default async function verifyJWT(
         return res.status(403).json({ message: "Forbidden" });
       }
       (req as CustomRequest).email = decoded.UserInfo.email;
-      (req as CustomRequest).role = decoded.UserInfo.roles;
+      (req as CustomRequest).role = decoded.UserInfo.role;
       (req as CustomRequest).userId = decoded.UserInfo.userId;
       next();
     }

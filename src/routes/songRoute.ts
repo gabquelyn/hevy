@@ -5,6 +5,7 @@ import {
   createSong,
   getSongs,
   deleteSong,
+  editSong,
   getSongbyId,
 } from "../controllers/songController";
 import verifyJWT from "../utils/verifyJwt";
@@ -16,6 +17,7 @@ songRoute
   .post(
     verifyJWT,
     (req: Request, res: Response, next: NextFunction) => {
+      console.log((req as CustomRequest).role);
       if ((req as CustomRequest).role !== "admin")
         return res.status(401).json({ message: "Unathorized, admin route" });
       next();
@@ -28,15 +30,29 @@ songRoute
     ],
     createSong
   )
-  .get(verifyJWT,getSongs);
+  .get(verifyJWT, getSongs);
 
 songRoute
   .route("/:id")
-  .delete((req: Request, res: Response, next: NextFunction) => {
-    if ((req as CustomRequest).role !== "admin")
-      return res.status(401).json({ message: "Unathorized, admin route" });
-    next();
-  }, deleteSong)
+  .delete(
+    verifyJWT,
+    (req: Request, res: Response, next: NextFunction) => {
+      if ((req as CustomRequest).role !== "admin")
+        return res.status(401).json({ message: "Unathorized, admin route" });
+      next();
+    },
+    deleteSong
+  )
+  .patch(
+    verifyJWT,
+    (req: Request, res: Response, next: NextFunction) => {
+      if ((req as CustomRequest).role !== "admin")
+        return res.status(401).json({ message: "Unathorized, admin route" });
+      next();
+    },
+    upload.single("PosterImage"),
+    editSong
+  )
   .get(getSongbyId);
 
 export default songRoute;
