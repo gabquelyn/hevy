@@ -1,5 +1,5 @@
 {
-  "name": "storageapi",
+  "name": "hevy",
   "version": "1.0.0",
   "description": "",
   "main": "dist/index.js",
@@ -27,7 +27,6 @@
     "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.9.12",
     "nodemon": "^3.1.0",
-    "typescript": "^5.7.3",
     "uuid": "^9.0.1"
   },
   "devDependencies": {
