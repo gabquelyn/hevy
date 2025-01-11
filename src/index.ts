@@ -3,6 +3,7 @@ import logger, { logEvents } from "./middlewares/logger";
 import cookierParser from "cookie-parser";
 import errorHandler from "./middlewares/errorHandler";
 import dotenv from "dotenv";
+import cors from "cors"
 import connectDB from "./utils/connectDB";
 import mongoose from "mongoose";
 import path from "path";
@@ -15,6 +16,7 @@ const app: Express = express();
 const port = process.env.PORT || 8080;
 
 app.use(logger);
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/", express.static(path.join(__dirname, "public")));
