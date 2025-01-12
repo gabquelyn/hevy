@@ -20,6 +20,13 @@ const songSchema = new Schema({
     spotify: String,
     itunes: String,
     amazon: String,
+    apple: String,
+    soundcloud: String,
+    audiomack: String,
+    bandcamp: String,
+    boomplay: String,
+    google: String,
+    shazam: String
   },
   posterImage: {
     type: String,

@@ -20,18 +20,7 @@ export const createSong = expressAsyncHandler(
     const errors = validationResult(req);
     if (!errors.isEmpty())
       return res.status(400).json({ errors: errors.array() });
-    const {
-      name,
-      title,
-      year,
-      deezer,
-      tidal,
-      boom,
-      youtube,
-      spotify,
-      itunes,
-      amazon,
-    } = req.body;
+    const { name, title, year, links } = req.body;
     const filename = `${uuid()}-${req.file.filename}`;
     const params = {
       Bucket: process.env.AWS_BUCKET_NAME!,
@@ -48,7 +37,7 @@ export const createSong = expressAsyncHandler(
       title,
       year,
       posterImage: filename,
-      links: { deezer, tidal, boom, youtube, spotify, itunes, amazon },
+      links: JSON.parse(links),
     });
 
     return res.status(201).json({ id: newSong._id });
@@ -96,18 +85,7 @@ export const editSong = expressAsyncHandler(
     });
     if (!existingSong) return res.status(404).json({ message: "Not found" });
 
-    const {
-      name,
-      title,
-      year,
-      deezer,
-      tidal,
-      boom,
-      youtube,
-      spotify,
-      itunes,
-      amazon,
-    } = req.body;
+    const { name, title, year, links } = req.body;
 
     if (req.file) {
       const filename = `${uuid()}-${req.file.filename}`;
@@ -124,17 +102,7 @@ export const editSong = expressAsyncHandler(
     if (name) existingSong.name = name;
     if (title) existingSong.title = title;
     if (year) existingSong.year = year;
-
-    existingSong.links = {
-      deezer,
-      tidal,
-      boom,
-      youtube,
-      spotify,
-      itunes,
-      amazon,
-    };
-
+    existingSong.links = JSON.parse(links);
     await existingSong.save();
     return res.status(200).json({ message: "Updated" });
   }
