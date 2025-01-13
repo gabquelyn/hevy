@@ -41,7 +41,7 @@ export const createSong = expressAsyncHandler(
       links: JSON.parse(links),
     });
 
-    return res.status(201).json({ id: newSong._id });
+    return res.status(201).json({ id: newSong.linkId });
   }
 );
 
