@@ -33,6 +33,7 @@ export const createSong = expressAsyncHandler(
     console.log(uploadRes);
 
     const newSong = await Song.create({
+      _id: `${name}-${title}`,
       name,
       title,
       year,
