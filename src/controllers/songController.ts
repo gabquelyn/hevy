@@ -33,7 +33,7 @@ export const createSong = expressAsyncHandler(
     console.log(uploadRes);
 
     const newSong = await Song.create({
-      _id: `${name}-${title}`,
+      linkId: `${name.replace(/\s+/g, "")}-${title.replace(/\s+/g, "")}`,
       name,
       title,
       year,
@@ -55,7 +55,7 @@ export const getSongs = expressAsyncHandler(
 export const getSongbyId = expressAsyncHandler(
   async (req: Request, res: Response): Promise<any> => {
     const { id } = req.params;
-    const existingSong = await Song.findById(id).lean().exec();
+    const existingSong = await Song.findOne({ linkId: id }).lean().exec();
     if (!existingSong) return res.status(404).json({ message: "Not found" });
 
     return res.status(200).json({

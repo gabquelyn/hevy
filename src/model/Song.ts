@@ -33,6 +33,11 @@ const songSchema = new Schema(
       type: String,
       required: true,
     },
+    linkId: {
+      type: String,
+      required: true,
+      unique: true,
+    },
   },
   {
     timestamps: true,
