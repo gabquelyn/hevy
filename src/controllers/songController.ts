@@ -21,6 +21,7 @@ export const createSong = expressAsyncHandler(
     if (!errors.isEmpty())
       return res.status(400).json({ errors: errors.array() });
     const { name, title, year, links } = req.body;
+    console.log(links)
     const filename = `${uuid()}-${req.file.filename}`;
     const params = {
       Bucket: process.env.AWS_BUCKET_NAME!,
