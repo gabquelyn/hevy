@@ -158,8 +158,7 @@ export const forgotPasswordController = expressAsyncHandler(
 
 export const restPasswordController = expressAsyncHandler(
   async (req: Request, res: Response): Promise<any> => {
-    const { token } = req.params;
-    const { password } = req.body;
+    const { password, token} = req.body;
     const existingToken = await Token.findOne({ token }).exec();
     if (!existingToken)
       return res.status(400).send({ message: "invalid link" });
